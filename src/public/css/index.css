@@ -1,0 +1,44 @@
+
+h1, h2, h4, h5, h6 {
+    text-align: center;
+    color: #fff;
+}
+h4{
+    padding-bottom: 20px;
+    border-bottom: 3px solid #bbb;
+    margin-bottom: 20px;
+}
+.products-container {
+    margin-top: 2em;
+    /* border: 3px solid #bbb; */
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-card {
+    border: 3px solid #bbb;
+    padding: 20px 40px;
+}
+
+.product-input {
+    border: 3px solid #bbb;
+    border-radius: 20px;
+    text-align: center;
+    width: 600px;
+    margin: auto;
+}
+button{
+    margin: 20px;
+    width: 300px;
+    background-color: aquamarine;
+}
+input{
+    width: 300px;
+
+}
+.input-element {
+    margin: 10px;
+}

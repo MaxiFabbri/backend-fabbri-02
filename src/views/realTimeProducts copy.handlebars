@@ -1,0 +1,144 @@
+<div>
+    <h2>Productos</h2>
+</div>
+<div class="product-input">
+    <h4>Crear Producto</h4>
+    <div class="input-element">
+        <label for="title">Título </label>
+        <input id="title" type="text">
+    </div>
+    <div class="input-element">
+        <label for="description">Descripción </label>
+        <input id="description" type="text">
+    </div>
+    <div class="input-element">
+        <label for="code">Código </label>
+        <input id="code" type="text">
+    </div>
+    <div class="input-element">
+        <label for="price">Precio </label>
+        <input id="price" type="number">
+    </div>
+    <div class="input-element">
+        <label for="stock">Stock </label>
+        <input id="stock" type="number">
+    </div>
+    <div class="input-element">
+        <label for="category">Categoría </label>
+        <input id="category" type="text">
+    </div>
+    <div class="input-element">
+        <label for="status"> Status</label>
+        <input id="status" type="checkbox">
+    </div>
+    <button id="crearButton">Crear</button>
+</div>
+
+<h2>Products</h2>
+<div id="productsList" class="products-container" >
+    
+</div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+<script type="module">
+import {renderProducts} from '/static/js/public-utils.js';
+
+const url = ''; // vacío para localhost
+const options = {};
+const user = { nickName: '' };
+
+//Elementos del DOM
+const productsList = document.getElementById('productsList');
+const crearButton = document.getElementById('crearButton')
+// Conectamos al SERVIDOR websockets
+const socketClient = io(url, options);
+
+// Habilitamos un listener atento a la conexión
+socketClient.on('connect', async () => {
+    console.log(`Conectado servidor socket.io ${url}`);
+    socketClient.emit('new_connection', {});
+});
+
+// Habilitamos un listener para products_list
+socketClient.on('products_list', data => {
+    productsList.innerHTML = '';
+    renderProducts(data)
+});
+
+
+
+
+// Conectamos al SERVIDOR websockets
+const socketClient = io(url, options);
+
+// Habilitamos un listener atento a la conexión
+socketClient.on('connect', async () => {
+    console.log(`Conectado servidor socket.io ${url}`);
+    socketClient.emit('new_connection', {});
+});
+
+// Habilitamos un listener para products_list
+socketClient.on('products_list', data => {
+    productsList.innerHTML = '';
+    renderProducts(data)
+});
+
+crearButton.onclick = () => {
+    const statusCheckbox = document.getElementById('status');
+    const isStatusChecked = statusCheckbox.checked
+    // Defino un Nuevo Objeto con los datos
+    const newProduct = { 
+            status: isStatusChecked,
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            code: document.getElementById('code').value,
+            price: parseInt(document.getElementById('price').value),
+            stock: parseInt(document.getElementById('stock').value),
+            category: document.getElementById('category').value,        
+    };
+
+    socketClient.emit('new_product', newProduct);
+    /*fetch('/api/products', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify(newProduct)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Algo falló:",
+            footer: error
+            });
+        console.error('Error:', error); // Manejar errores aquí
+    })*/
+}
+
+
+
+
+/* const getProducts = async() => { fetch(`${config.DIRNAME}/api/products/`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Hubo un problema con tu fetch operación:', error);
+    })
+} */
+
+
+    socketClient.on('products', data => {
+        console.log('Received Products Socket: ',data)
+        renderProducts(data)
+    });
+
+
+</script>
