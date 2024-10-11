@@ -4,9 +4,12 @@ h1, h2, h4, h5, h6 {
     color: #fff;
 }
 h4{
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 3px solid #bbb;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+label{
+    width: 100px;
 }
 .products-container {
     margin-top: 2em;
@@ -20,7 +23,7 @@ h4{
 
 .product-card {
     border: 3px solid #bbb;
-    padding: 20px 40px;
+    padding: 10px 20px;
 }
 
 .product-input {

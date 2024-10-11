@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import fs from 'fs';
 import {writeFile, readFile} from '../utils.js';
 
 const router = Router();
@@ -78,6 +77,7 @@ router.get('/', updateProducts, (req, res) => {
         res.status(200).send({ error: null, data: mostrarProducts });
     }
 });
+
 // Endpoint GET con params
 router.get('/:pid', updateProducts, (req, res) => {
     const id = parseInt(req.params.pid);
@@ -90,8 +90,6 @@ router.get('/:pid', updateProducts, (req, res) => {
 });
 // Endpoint POST
 router.post('/',updateProducts, checkProduct , (req, res) => {
-
-    console.log('Recibido: ',req.body)
     const maxIdProv = Math.max(...products.map(element => +element.id));
     const maxId = maxIdProv < 0 ? 0 : maxIdProv;
     const newProduct = { id: maxId + 1, 
@@ -106,6 +104,11 @@ router.post('/',updateProducts, checkProduct , (req, res) => {
     };
     products.push(newProduct);
     writeFile(PRODFILE, products)
+
+    // Recuperamos la instancia global de socketServer para poder realizar un emit
+    const socketServer = req.app.get('socketServer');
+    socketServer.emit('products_list', products )
+
     res.status(200).send({ error: null, data: newProduct });
 });
 //  Endpoint PUT con param
@@ -114,6 +117,10 @@ router.put('/:pid', updateProducts, checkProduct, checkId, checkStatus, (req, re
     const index = products.findIndex(element => element.id === id);
     if (index > -1) {
         products[index] = {"id": id,...req.body};
+
+        const socketServer = req.app.get('socketServer');
+        socketServer.emit('products_list', products );
+
         res.status(200).send({ error: null, data: products[index] });
     } else {
         res.status(404).send({ error: 'No se encuentra el producto', data: [] });
@@ -126,6 +133,11 @@ router.delete('/:pid', updateProducts, (req, res) => {
     if (index > -1) {
         products.splice(index, 1);
         writeFile(PRODFILE, products)
+
+        // Recuperamos la instancia global de socketServer para poder realizar un emit
+        const socketServer = req.app.get('socketServer');
+        socketServer.emit('products_list', products )
+
         res.status(200).send({ error: null, data: 'Producto borrado' });
     } else {
         res.status(404).send({ error: 'No se encuentra el Producto', data: [] });

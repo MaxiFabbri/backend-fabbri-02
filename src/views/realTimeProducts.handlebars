@@ -1,5 +1,5 @@
 <div>
-    <h2>Productos</h2>
+    <h2>Real Time Productos</h2>
 </div>
 <div class="product-input">
     <h4>Crear Producto</h4>
@@ -46,26 +46,28 @@ import {renderProducts} from '/static/js/public-utils.js';
 
 const url = ''; // vacío para localhost
 const options = {};
-const user = { nickName: '' };
+//const user = { nickName: '' };
 
 //Elementos del DOM
 const productsList = document.getElementById('productsList');
 const crearButton = document.getElementById('crearButton')
-// Conectamos al SERVIDOR websockets
-/* const socketClient = io(url, options);
 
-// Habilitamos un listener atento a la conexión
-socketClient.on('connect', async () => {
-    console.log(`Conectado servidor socket.io ${url}`);
-    socketClient.emit('new_connection', {});
-});
-
-// Habilitamos un listener para products_list
-socketClient.on('products_list', data => {
-    productsList.innerHTML = '';
-    renderProducts(data)
-}); */
-
+const getProducts = async() => { fetch('/api/products/', { method: 'GET'})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        //console.log('Data Recibida dentro de getProducts: ',data);
+        renderProducts(data.data);
+    })
+    .catch(error => {
+        console.error('Hubo un problema con tu fetch operación:', error);
+    })
+}
+getProducts()
 
 // Conectamos al SERVIDOR websockets
 const socketClient = io(url, options);
@@ -73,12 +75,10 @@ const socketClient = io(url, options);
 // Habilitamos un listener atento a la conexión
 socketClient.on('connect', async () => {
     console.log(`Conectado servidor socket.io ${url}`);
-    socketClient.emit('new_connection', {});
 });
 
 // Habilitamos un listener para products_list
 socketClient.on('products_list', data => {
-    console.log("products list recibida", data)
     productsList.innerHTML = '';
     renderProducts(data)
 });
@@ -97,8 +97,21 @@ crearButton.onclick = () => {
             category: document.getElementById('category').value,        
     };
 
-    socketClient.emit('new_product', newProduct);
-    
+const sendProduct = async (data) => {
+    try {
+        const response = await fetch('/api/products', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.error('Hubo un problema con tu fetch operación:', error);
+    }
+}
+  
+sendProduct(newProduct)
+
+    //socketClient.emit('new_product', newProduct); 
 }
 
 

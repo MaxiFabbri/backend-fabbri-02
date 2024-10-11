@@ -10,7 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
 <script type="module">
 
-    // const msgField = document.getElementById('msg');
     import {renderProducts} from '/static/js/public-utils.js';
 
     const productsList = document.getElementById('productsList');
@@ -22,8 +21,7 @@
             return response.json();
         })
         .then(data => {
-            //const products = data.data;
-            console.log('Data Recibida dentro de getProducts: ',data);
+            //console.log('Data Recibida dentro de getProducts: ',data);
             renderProducts(data.data);
         })
         .catch(error => {

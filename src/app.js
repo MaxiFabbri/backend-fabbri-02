@@ -23,10 +23,6 @@ const httpServer = app.listen(config.PORT, () => {
     app.set('views', `${config.DIRNAME}/views`);
     app.set('view engine', 'handlebars');
 
-
-
-
-
     // rutas de views de handlebars
     app.use('/views', viewsRouter);
     // paquete de rutas-endpoints dinamicos
